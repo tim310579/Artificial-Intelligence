@@ -1,5 +1,5 @@
-from JamPuzzle import *
-from JamAgent import *
+from Puzzles import *
+from Algos import *
 from sys import argv
 import datetime
 import psutil
@@ -28,7 +28,7 @@ for lines in k:
         #print(words[2], words[1], words[4], words[3])
 
 
-trafficJamtmp = JamPuzzle(6, 6, 2, tmp)
+trafficJamtmp = Puzzles(6, 6, 2, tmp)
 f.close()
 
 #print(trafficJamtmp)
@@ -42,7 +42,7 @@ def printSolution(puzzle, solution):
 
 
 # Create AI agent and run on specified puzzles
-agent = JamAgent()
+agent = Algos()
 
 
 solution = ''

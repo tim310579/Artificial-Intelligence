@@ -1,6 +1,3 @@
-"""Test script for the Traffic Jam Puzzle AI for Project 1 of CSCI373 AI.
-(c) 2016 Gary Chen
-"""
 from JamPuzzle import *
 from JamAgent import *
 from sys import argv
@@ -36,10 +33,6 @@ f.close()
 
 #print(trafficJamtmp)
 def printSolution(puzzle, solution):
-	"""Method that takes an initial puzzle and array of solution Move
-	objects and applies the solution to the puzzle while printing out
-	the state and next move details for each move.
-	"""
 	for m in solution:
 		print(puzzle)
 		print(m)
@@ -83,9 +76,9 @@ print("Number of nodes visited in search:  " + str(agent.nodesVisited))
 end = datetime.datetime.now()
 print('Time: ', end-begin)
 
-info = psutil.virtual_memory()
+#info = psutil.virtual_memory()
 
 
-f = open('result/statistic.txt', 'a')
-f.write(str(len(solution)) + ' ' + str(agent.nodesVisited) + ' ' + str(end-begin) + '\n')
-f.close()
+#f = open('result/statistic.txt', 'a')
+#f.write(str(len(solution)) + ' ' + str(agent.nodesVisited) + ' ' + str(end-begin) + '\n')
+#f.close()

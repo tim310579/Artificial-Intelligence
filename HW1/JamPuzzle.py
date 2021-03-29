@@ -1,18 +1,5 @@
-"""This module includes the JamPuzzle class, which represents an instance of the Traffic
-Jam Puzzle.  It supports all moves, legal or not, and will track the state of the puzzle
-for any moves made.
-It also includes the Vehicle class, which represents a single vehicle with a position,
-orientation, and vehicle type.
-(c) 2016 Gary Chen
-"""
 from enum import Enum, IntEnum
 
-
-"""Some useful enums!
-	
-VehicleTypes holds vehicle length for each type.  Orientations just 
-tracks orientation of a vehicle, useful for dereferencing position tuples.
-"""
 class VehicleTypes(IntEnum):
 	car = 2
 	truck = 3
@@ -23,14 +10,6 @@ class Orientations(IntEnum):
 
 
 class JamPuzzle:
-	"""Represents an instance of the game
-	Attributes:
-		gridSizeX (int):  width of the grid
-		gridSizeY (int):  height of the grid
-		doorPos (int): 	position of the door (0 indexed)
-		vehicles (Vehicle[]]): 	a list of Vehicle objects representing
-			the initial state of the game
-	"""
 	def __init__(self, gridSizeX, gridSizeY, doorPos, vehicles):
 		self.gridSizeY = gridSizeY
 		self.gridSizeX = gridSizeX
@@ -45,14 +24,7 @@ class JamPuzzle:
 		return (self.gridSizeX, self.gridSizeY)
 	
 	def getGrid(self):
-		"""Returns a 2D char list representation of the state of the puzzle, not
-			including the exit door's position.  Each car is represented by a
-			letter in all the sapces it occupies; blank spaces are '_'.  The goal 
-			car is the last car found that is aligned with the exit door, and is 
-			represented by '#'.
-			Return:
-				grid = String[][]:  2D string array graphically depicting puzzle state
-		"""  
+		
 		#symbol = ord('A')
 		symbol = ord('1')
 		grid = [["_" for y in range(self.gridSizeY)] for x in range(self.gridSizeX)]
@@ -88,13 +60,6 @@ class JamPuzzle:
 
 	
 	def moveVehicle(self, veh, moves):
-		"""Moves the vehicle by an amount in the directions of its 
-			orientation .  Does not check for obstacles.
-			
-		Args:
-			veh (Vehicle):	the vehicle to be moved
-			moves (int):	amount to move (can be negative)
-		"""
 		orient = veh.orientation
 		newPosList = list(veh.pos)
 		newPosList[orient] += moves
@@ -102,13 +67,6 @@ class JamPuzzle:
 
 
 	def moveRange(self, veh):
-		"""Finds legal move range of a vehicle in current puzzle.
-		Args:
-			veh (Vehicle):  the vehicle to check
-		Return:
-			(range): a range from min moves to max moves + 1
-		"""
-
 		minMove = 0
 		# iterate over spaces behind to check
 		for i in range(-1, -veh.pos[veh.orientation]-1, -1):
@@ -151,24 +109,12 @@ class JamPuzzle:
 
 
 	def getVehicleAt(self, pos):
-		"""Retrieves vehicle at given position in puzzle
-		Args:
-			pos ((int, int)):  position of upper-left part of vehicle to find
-		Return:
-			v (Vehicle):  the found vehicle, if it exists
-			None:  if no vehicle was found at the position
-		"""
 		for v in self.vehicles:
 			if v.pos == pos:
 				return v
 		return None
 
 	def won(self):
-		"""Checks if game is in a win-state, i.e. a vertical vehicle is adjacent
-		to the door on the top edge of the puzzle grid
-		Return:
-			(bool):  boolean representing if game is in a win state or not
-		"""
 		v = self.getVehicleAt((4, self.doorPos))
 		#print('haha:', v,'over')
 		if v != None and v.orientation == Orientations.horizontal:
@@ -186,14 +132,7 @@ class JamPuzzle:
 
 
 class Vehicle:
-	"""Represents a single vehicle instance
-	Attributes:
-		pos ((int, int)):  the (x, y) position of the top-left square of the vehicle
-		orientation (Orientations):  an Orientations enum value representing direction
-			the vehicle is facing (vertical or horizontal; backwards or forwards doesn't matter)
-		vType (VehicleTypes): a VehicleTypes enum value representing type of vehicle, either
-			car or truck.  Also represents length of vehicle.
-	"""
+	
 	def __init__(self, pos, orientation, vType, number):
 		self.pos = pos
 		self.orientation = orientation
@@ -201,11 +140,7 @@ class Vehicle:
 		self.number = number
 
 	def coveredUnits(self):
-		"""Returns list of all locations covered by this vehicle.
-		Return:
-			result ((int, int)[]):  Array of tuples representing all coordinates this
-				vehicle must cover, given its position and length.
-		"""
+		
 		if self.orientation == Orientations.vertical:
 			result = [(self.pos[0], self.pos[1] + i) for i in range(int(self.vType))]
 		if self.orientation == Orientations.horizontal:

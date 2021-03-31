@@ -2,7 +2,7 @@
 
 使用以下指令執行python檔案
 
-`python test.py 1 L01.txt`
+`python test.py 1 prog1_puzzle/L01.txt`
 
 第三個參數可選擇1-5，分別對應五種演算法，BFS，DFS，IDS，A*，IDA*
 

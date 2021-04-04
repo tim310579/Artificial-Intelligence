@@ -158,6 +158,37 @@ class Algos:
 			tmp = ida_starQueue.get()
 			current = tmp[3]
 		return current.movesSoFar
+
+	def another_h(self, puzzle):
+		# Queue to hold untraversed nodes
+		another_hQueue = PriorityQueue()
+		self.nodesVisited = 0
+		self.space = 0
+		# The current node/state
+		current = another_hNode(puzzle, [], 0)
+		
+		seenPuzzleStates = {}
+		seenPuzzleStates[str(current.puzzle.getGrid())] = True;
+		cnt = 0
+		while not(current.puzzle.won()):
+			#print(current.blocking)
+			self.nodesVisited += 1
+			
+			for m in current.getPossibleMoves():
+				cnt += 1
+				# Duplicate puzzle state and perform a move
+				newState = copy.deepcopy(current)
+				newState.puzzle.move(m.pos, m.moves)
+				self.space += 1
+				# If new state is unseen, add to queue and seen states list
+				if ((not str(newState.puzzle) in seenPuzzleStates) or seenPuzzleStates[str(newState.puzzle)] > len(newState.movesSoFar)):
+					#a_starQueue.append(A_starNode(newState.puzzle, current.movesSoFar + [m], 0))
+					another_hQueue.put((current.blocking, cnt, another_hNode(newState.puzzle, current.movesSoFar + [m], current.getblocking())))
+					seenPuzzleStates[str(newState.puzzle)] = True;
+			#current = a_starQueue.popleft()
+			tmp = another_hQueue.get()
+			current = tmp[2]
+		return current.movesSoFar
 	
 class BfsNode:
 	def __init__(self, puzzle, movesSoFar):
@@ -304,6 +335,65 @@ class IDA_starNode:
                                 elif v.vType == VehicleTypes.truck and (v.pos[1] >= 0 and v.pos[1] <=2):    #is block
                                         blockingcars +=1
                 return blockingcars
+
+class another_hNode:
+	def __init__(self, puzzle, movesSoFar, blocking):
+		self.puzzle = puzzle
+		self.movesSoFar = movesSoFar
+		self.blocking = blocking
+
+	def getPossibleMoves(self):
+		results = []
+		current = self.puzzle
+		for v in current.vehicles:
+			for i in current.moveRange(v):
+				#print('v:',v,'v')
+				# Don't move if move length is 0
+				if not i == 0:
+						results += [Move(v.pos, i, v.orientation, v.number)]
+		#print(results)						
+		return results
+	def getblocking(self):
+                current = self.puzzle
+                blockingcars = 0
+                red_car_pos = 0
+                for v in current.vehicles:      #find red car
+                        if v.number == '0':
+                                if v.pos[0] == 4:
+                                        return 0
+                                else:
+                                        red_car_pos = v.pos[0]
+                                break
+                blockingcars = 1
+                for v in current.vehicles:
+                        if v.orientation == Orientations.vertical and v.pos[0] > red_car_pos:   #may block
+                                if v.vType == VehicleTypes.car and (v.pos[1] == 1 or v.pos[1] == 2):    #is block
+                                        blockingcars += get_another_blocking(current, v, 0)
+                                elif v.vType == VehicleTypes.truck and (v.pos[1] >= 0 and v.pos[1] <=2):    #is block
+                                        blockingcars += get_another_blocking(current, v, 0)
+                #print(blockingcars)
+                return blockingcars
+                      
+def get_another_blocking(self, goal_car, itr):
+        itr = itr + 1
+        if itr >= 3: return 1
+        current = self
+        blockingcars = 0
+        if goal_car.orientation == Orientations.vertical:
+                for v in current.vehicles:
+                        if v.orientation == Orientations.horizontal:    #horizontal block vertical
+                                if v.vType == VehicleTypes.car and (v.pos[0] == goal_car.pos[0]-1 or v.pos[0] == goal_car.pos[0]):    #is block
+                                        blockingcars += get_another_blocking(current, v, itr)
+                                elif v.vType == VehicleTypes.truck and (v.pos[0] >= goal_car.pos[0]-2 and v.pos[0] <= goal_car.pos[0]):    #is block
+                                        blockingcars += get_another_blocking(current, v, itr)  
+        elif goal_car.orientation == Orientations.horizontal:
+                for v in current.vehicles:
+                        if v.orientation == Orientations.vertical:    #vertical block hor
+                                if v.vType == VehicleTypes.car and (v.pos[1] == goal_car.pos[1]-1 or v.pos[1] == goal_car.pos[1]):    #is block
+                                        blockingcars += get_another_blocking(current, v, itr)
+                                elif v.vType == VehicleTypes.truck and (v.pos[1] >= goal_car.pos[1]-2 and v.pos[1] <= goal_car.pos[1]):    #is block
+                                        blockingcars += get_another_blocking(current, v, itr)
+        return blockingcars           
 class Move:
 	def __init__(self, pos, moves, orientation, number):
 		self.pos = pos;

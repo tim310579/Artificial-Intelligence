@@ -60,6 +60,8 @@ elif algo == '4':
         #print('A*')
 elif algo == '5':
         solution = agent.ida_star(trafficJamtmp)
+elif algo == '6':
+        solution = agent.another_h(trafficJamtmp)
         #print('IDA*')
 #solution = agent2.dfs(trafficJamtmp)
 printSolution(trafficJamtmp, solution)
@@ -69,6 +71,7 @@ elif algo == '2': print('DFS')
 elif algo == '3': print('IDS')
 elif algo == '4': print('A*')
 elif algo == '5': print('IDA*')
+elif algo == '6': print('Another heuristic')
 
 print("Puzzle completed in " + str(len(solution)) + " moves.")
 print("Number of nodes visited in search:  " + str(agent.nodesVisited))
@@ -79,6 +82,6 @@ print('Time: ', end-begin)
 #info = psutil.virtual_memory()
 
 
-#f = open('result/statistic.txt', 'a')
-#f.write(str(len(solution)) + ' ' + str(agent.nodesVisited) + ' ' + str(end-begin) + '\n')
-#f.close()
+f = open('result/statistic.txt', 'a')
+f.write(str(len(solution)) + ' ' + str(agent.nodesVisited) + ' ' + str(end-begin) + '\n')
+f.close()
